@@ -22,6 +22,12 @@ class Building
      */
     private $name;
 
+    /**
+     * @ORM\OneToOne(targetEntity=city::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $city_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -35,6 +41,18 @@ class Building
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCityId(): ?city
+    {
+        return $this->city_id;
+    }
+
+    public function setCityId(city $city_id): self
+    {
+        $this->city_id = $city_id;
 
         return $this;
     }
