@@ -11,6 +11,7 @@ Modified: !date!
 namespace App\Controller\Admin;
 
 use App\Entity\Users;
+use App\Form\ChangePasswordType;
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use Symfony\Component\Mime\Address;
@@ -33,17 +34,8 @@ class UsersController extends AbstractController
     /**
      * @Route("/", name="home", methods={"GET"})
      */
-    public function index( UsersRepository $usersRepository): Response    
-    {
-        $session = new Session(); 
-       
-        $okValid = $usersRepository->findOneBy(['id' => $session->get('id')]); 
-       
-       /* if($okValid->getActivateDate() == null){
-             return $this->redirectToRoute('app_login');
-        } */ 
-       
-
+    public function index(Request $request, UsersRepository $usersRepository): Response    
+    {      
         return $this->render('users/index.html.twig', [
             'users' => $usersRepository->findAll(),
         ]);
@@ -54,11 +46,12 @@ class UsersController extends AbstractController
      */
     public function new(Request $request, MailerInterface $mailer, UserPasswordEncoderInterface $passEncode): Response
     {
+        
         $user = new Users();
         
         $form = $this->createForm(UsersType::class, $user);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             #Génére un mot de passe aléatoire
             $pass = substr(str_shuffle(
@@ -88,7 +81,7 @@ class UsersController extends AbstractController
 
                 $mailer->send($email);
 
-            return $this->redirectToRoute('users_index');
+            return $this->redirectToRoute('users_home');
         }
 
         return $this->render('users/new.html.twig', [
@@ -97,9 +90,8 @@ class UsersController extends AbstractController
         ]);
     }
     
-
     /**
-     * @Route("/{id}", name="users_show", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
      */
     public function show(Users $user): Response
     {
@@ -109,7 +101,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="users_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Users $user): Response
     {
@@ -119,7 +111,7 @@ class UsersController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('users_index');
+            return $this->redirectToRoute('users_home');
         }
 
         return $this->render('users/edit.html.twig', [
