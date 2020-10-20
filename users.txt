@@ -1,2 +1,9 @@
-pass:Oc!dHa.7x5 
-id: fabrice_pourinet@society.com 
+//admin
+pass:Oc!dHa.7x5 1
+id: fabrice@top.com
+mMA5cqABD9Pv = pass2
+
+//user
+pass = Is0g%0nTll +1
+origin = L:smq-C&pO 
+id =  test_login@society.com 
