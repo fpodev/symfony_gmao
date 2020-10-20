@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -42,12 +45,7 @@ class Users implements UserInterface
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $email;
-
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $site;
+    private $email;    
 
     /**
      * @ORM\Column(type="datetime")
@@ -59,6 +57,24 @@ class Users implements UserInterface
      */
     private $activate_date;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Ville::class, mappedBy="contact")
+     */
+    private $villes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ville::class)
+     */
+    private $ville;
+
+    public function __construct()
+    {
+        $this->villes = new ArrayCollection();
+    }
+    public function __toString()
+    {
+        return $this->name;
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -159,19 +175,7 @@ class Users implements UserInterface
         $this->email = $email;
 
         return $this;
-    }
-
-    public function getSite(): ?string
-    {
-        return $this->site;
-    }
-
-    public function setSite(string $site): self
-    {
-        $this->site = $site;
-
-        return $this;
-    }
+    }   
 
     public function getCreateDate(): ?\DateTimeInterface
     {
@@ -196,4 +200,48 @@ class Users implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|Ville[]
+     */
+    public function getVilles(): Collection
+    {
+        return $this->villes;
+    }
+
+    public function addVille(Ville $ville): self
+    {
+        if (!$this->villes->contains($ville)) {
+            $this->villes[] = $ville;
+            $ville->setContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVille(Ville $ville): self
+    {
+        if ($this->villes->contains($ville)) {
+            $this->villes->removeElement($ville);
+            // set the owning side to null (unless already changed)
+            if ($ville->getContact() === $this) {
+                $ville->setContact(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVille(): ?ville
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?ville $ville): self
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }   
+    
 }
