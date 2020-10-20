@@ -1,20 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ChangePasswordController!{% endblock %}
+{% block title %}Changer mot de passe{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/public/OpenClassRooms/symfony_gmao/src/Controller/ChangePasswordController.php'|file_link(0) }}">src/Controller/ChangePasswordController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/public/OpenClassRooms/symfony_gmao/templates/change_password/index.html.twig'|file_link(0) }}">templates/change_password/index.html.twig</a></code></li>
-    </ul>
-</div>
+   {% if valid|e %}
+       <h1>Blabla</h1>
+    {% else %}
+    <h1>Bleble</h1>
+   {% endif %}
+   {% for message in app.flashes('erreur') %}
+   <div class="col-xs4">
+       <div class="p-3 my-2 rounded-2 error" role="alert">
+           {{ message }}
+        </div>
+   </div>
+{% endfor %}   
+    {{ form(form, {'action': path('users_change', {id: user.id})}) }}   
 {% endblock %}
