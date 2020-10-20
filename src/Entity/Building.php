@@ -22,13 +22,9 @@ class Building
      */
     private $name;
 
-    /**
-     * @ORM\OneToOne(targetEntity=city::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $city_id;
+   
 
-    public function getId(): ?int
+    public function getId(): ?int 
     {
         return $this->id;
     }
