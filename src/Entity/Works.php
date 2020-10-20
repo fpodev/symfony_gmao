@@ -17,11 +17,7 @@ class Works
      */
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=city::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $city;
+    
 
     /**
      * @ORM\OneToOne(targetEntity=building::class, cascade={"persist", "remove"})
