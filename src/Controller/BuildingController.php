@@ -2,21 +2,24 @@
 
 namespace App\Controller;
 
+use App\Entity\Ville;
 use App\Entity\Building;
 use App\Form\BuildingType;
 use App\Repository\BuildingRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Proxies\__CG__\App\Entity\Ville as EntityVille;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @Route("/building", name="building_")
+ * @Route("/building")
  */
 class BuildingController extends AbstractController
 {
     /**
-     * @Route("/", name="index", methods={"GET"})
+     * @Route("/", name="building_index", methods={"GET"})
      */
     public function index(BuildingRepository $buildingRepository): Response
     {
@@ -26,11 +29,11 @@ class BuildingController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="new", methods={"GET","POST"})
+     * @Route("/new", name="building_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, BuildingRepository $build): Response
     {
-        $building = new Building();
+        $building = new Building();       
         $form = $this->createForm(BuildingType::class, $building);
         $form->handleRequest($request);
 
@@ -63,7 +66,7 @@ class BuildingController extends AbstractController
      */
     public function edit(Request $request, Building $building): Response
     {
-        $form = $this->createForm(Building1Type::class, $building);
+        $form = $this->createForm(BuildingType::class, $building);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
