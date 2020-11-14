@@ -16,13 +16,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\VarDumper\VarDumper;
+
 
 /**
  * @Route("/users", name="users_")
  */
 class UsersController extends AbstractController
 {
+    public const LENGTH_PASS = 10;
+    public const FROM_MAIL_ADRESS = 'create_account_gmao@society.com';
+    public const FROM_NAME_MAIL = 'admin.gmao';
+    public const SUBJECT_MAIL = 'création compte GMAO';
+
     /**
      * @Route("/", name="home", methods={"GET"})
      */
@@ -67,19 +72,18 @@ class UsersController extends AbstractController
      */
     public function new(Request $request, MailerInterface $mailer, UserPasswordEncoderInterface $passEncode, Users $user ): Response
     {    
-             
+        $user = new Users();     
         $form = $this->createForm(UsersType::class, $user);
         $form->handleRequest($request);
            
         if ($form->isSubmitted() && $form->isValid()) {
             #Génére un mot de passe aléatoire
             $pass = substr(str_shuffle(
-                'abcdefghijklmnopqrstuvwxyzABCEFGHIJKLMNOPQRSTUVWXYZ0123456789/!.*-+&_$:;'),1, 10);                 
+                'abcdefghijklmnopqrstuvwxyzABCEFGHIJKLMNOPQRSTUVWXYZ0123456789/!.*-+&_$:;'),1, self::LENGTH_PASS);                 
             
             $user->setPassword(
                 $passEncode->encodePassword($user, $pass)
             );
-
             $user->setCreateDate(new \DateTime('now'));
            
             $entityManager = $this->getDoctrine()->getManager();
@@ -87,9 +91,9 @@ class UsersController extends AbstractController
             $entityManager->flush();
 
             $email = (new TemplatedEmail())
-                ->from(new Address('create_account_gmao@society.com', 'admin.gmao'))
+                ->from(new Address(self::FROM_MAIL_ADRESS, self::FROM_NAME_MAIL))
                 ->to($user->getEmail())
-                ->subject('création compte GMAO/Modification mot de passe')
+                ->subject(self::SUBJECT_MAIL)
                 ->htmlTemplate('users/mails/createUser.html.twig')
                 ->context([
                     'pass' => $pass,
@@ -145,12 +149,14 @@ class UsersController extends AbstractController
     public function delete(Request $request, Users $user): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $ville = $user->getVille();
+            $ville->setContact(null);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($user);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('users_index');
+        return $this->redirectToRoute('users_home');
     }
      /**
      * @Route("/change/{id<[0-9]+>}", name="change")
