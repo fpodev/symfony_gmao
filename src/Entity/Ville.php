@@ -6,6 +6,7 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass=VilleRepository::class)
@@ -32,15 +33,31 @@ class Ville
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $zip_code;
+    private $zip_code;      
 
     /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="villes")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToMany(targetEntity=Users::class, mappedBy="ville", cascade="persist")
      */
-    private $contact; 
+    private $users;
 
-    public function __toString()
+    /**
+     * @ORM\OneToOne(targetEntity=Users::class)
+     * 
+     */
+    private $contact;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Building::class, mappedBy="ville", cascade="persist")
+     */
+    private $building;    
+
+    public function __construct()    {
+        
+        $this->users = new ArrayCollection();
+        $this->building = new ArrayCollection();        
+    } 
+
+    public function __toString():?string
     {
         return $this->name;
     }
@@ -85,18 +102,76 @@ class Ville
 
         return $this;
     }
+    
+    /**
+     * @return Collection|Users[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
 
-    public function getContact(): ?Users
+    public function addUser(Users $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(Users $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getVille() === $this) {
+                $user->setVille(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getContact(): ?users
     {
         return $this->contact;
     }
 
-    public function setContact(?Users $contact): self
+    public function setContact(?users $contact): self
     {
         $this->contact = $contact;
 
         return $this;
     }
-    
-    
+
+    /**
+     * @return Collection|Building[]
+     */
+    public function getBuilding(): Collection
+    {
+        return $this->building;
+    }
+
+    public function addBuilding(Building $building): self
+    {
+        if (!$this->building->contains($building)) {
+            $this->building[] = $building;
+            $building->setVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBuilding(Building $building): self
+    {
+        if ($this->building->removeElement($building)) {
+            // set the owning side to null (unless already changed)
+            if ($building->getVille() === $this) {
+                $building->setVille(null);
+            }
+        }
+
+        return $this;
+    }
 }

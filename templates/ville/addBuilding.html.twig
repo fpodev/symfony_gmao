@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter bâtiment{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une bâtiment pour {{ ville }}</h1>
+
+    {{ include('ville/_form.html.twig', {'button_label': 'Ajouter'}) }}
+
+    <a href="{{ path('ville_index') }}">back to list</a>
+    
+{% endblock %}

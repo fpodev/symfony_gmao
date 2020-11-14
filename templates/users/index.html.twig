@@ -26,7 +26,7 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.firstname }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.ville.name }}</td>
+                <td>{{ user.ville }}</td>
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>                
                 <td>{{ user.createDate ? user.createDate|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ user.activateDate ? user.activateDate|date('Y-m-d H:i:s') : '' }}</td>

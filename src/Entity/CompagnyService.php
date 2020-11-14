@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CompagnyServiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +33,17 @@ class CompagnyService
      * @ORM\Column(type="string", length=20)
      */
     private $phone_contact;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Works::class, mappedBy="compagny_service")
+     */
+    private $works;
+
+    public function __construct()
+    {
+        $this->works = new ArrayCollection();
+    }
+    
 
     public function getId(): ?int
     {
@@ -72,4 +85,35 @@ class CompagnyService
 
         return $this;
     }
+
+    /**
+     * @return Collection|Works[]
+     */
+    public function getWorks(): Collection
+    {
+        return $this->works;
+    }
+
+    public function addWork(Works $work): self
+    {
+        if (!$this->works->contains($work)) {
+            $this->works[] = $work;
+            $work->setCompagnyService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWork(Works $work): self
+    {
+        if ($this->works->removeElement($work)) {
+            // set the owning side to null (unless already changed)
+            if ($work->getCompagnyService() === $this) {
+                $work->setCompagnyService(null);
+            }
+        }
+
+        return $this;
+    }
+    
 }

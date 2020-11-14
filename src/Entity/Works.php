@@ -19,34 +19,7 @@ class Works
 
     
 
-    /**
-     * @ORM\OneToOne(targetEntity=building::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $building;
-
-    /**
-     * @ORM\OneToOne(targetEntity=sector::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $sector;
-
-    /**
-     * @ORM\OneToOne(targetEntity=equipement::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $epuipement;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=users::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user_applicant;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=users::class)
-     */
-    private $technician;
+    
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -71,12 +44,7 @@ class Works
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private $validate_date;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=CompagnyService::class)
-     */
-    private $external_responce;
+    private $validate_date;    
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -96,84 +64,46 @@ class Works
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $finish_datetime;
+    private $finish_datetime;    
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Building::class, inversedBy="works")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $building;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Sector::class, inversedBy="works")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sector;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Equipement::class, inversedBy="works")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $equipement;    
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="works_request")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user_request;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="works_technicien")
+     */
+    private $user_technicien;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=CompagnyService::class, inversedBy="works")
+     */
+    private $compagny_service;      
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCity(): ?city
-    {
-        return $this->city;
-    }
-
-    public function setCity(city $city): self
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    public function getBuilding(): ?building
-    {
-        return $this->building;
-    }
-
-    public function setBuilding(building $building): self
-    {
-        $this->building = $building;
-
-        return $this;
-    }
-
-    public function getSector(): ?sector
-    {
-        return $this->sector;
-    }
-
-    public function setSector(sector $sector): self
-    {
-        $this->sector = $sector;
-
-        return $this;
-    }
-
-    public function getEpuipement(): ?equipement
-    {
-        return $this->epuipement;
-    }
-
-    public function setEpuipement(equipement $epuipement): self
-    {
-        $this->epuipement = $epuipement;
-
-        return $this;
-    }
-
-    public function getUserApplicant(): ?users
-    {
-        return $this->user_applicant;
-    }
-
-    public function setUserApplicant(?users $user_applicant): self
-    {
-        $this->user_applicant = $user_applicant;
-
-        return $this;
-    }
-
-    public function getTechnician(): ?users
-    {
-        return $this->technician;
-    }
-
-    public function setTechnician(?users $technician): self
-    {
-        $this->technician = $technician;
-
-        return $this;
-    }
+    }    
 
     public function getTitle(): ?string
     {
@@ -233,20 +163,8 @@ class Works
         $this->validate_date = $validate_date;
 
         return $this;
-    }
-
-    public function getExternalResponce(): ?CompagnyService
-    {
-        return $this->external_responce;
-    }
-
-    public function setExternalResponce(?CompagnyService $external_responce): self
-    {
-        $this->external_responce = $external_responce;
-
-        return $this;
-    }
-
+    } 
+    
     public function getEstimate(): ?string
     {
         return $this->estimate;
@@ -293,5 +211,78 @@ class Works
         $this->finish_datetime = $finish_datetime;
 
         return $this;
+    }    
+
+    public function getBuilding(): ?Building
+    {
+        return $this->building;
     }
+
+    public function setBuilding(?Building $building): self
+    {
+        $this->building = $building;
+
+        return $this;
+    }
+
+    public function getSector(): ?Sector
+    {
+        return $this->sector;
+    }
+
+    public function setSector(?Sector $sector): self
+    {
+        $this->sector = $sector;
+
+        return $this;
+    }
+
+    public function getEquipement(): ?Equipement
+    {
+        return $this->equipement;
+    }
+
+    public function setEquipement(?Equipement $equipement): self
+    {
+        $this->equipement = $equipement;
+
+        return $this;
+    }
+    
+    public function getUserRequest(): ?Users
+    {
+        return $this->user_request;
+    }
+
+    public function setUserRequest(?Users $user_request): self
+    {
+        $this->user_request = $user_request;
+
+        return $this;
+    }
+
+    public function getUserTechnicien(): ?Users
+    {
+        return $this->user_technicien;
+    }
+
+    public function setUserTechnicien(?Users $user_technicien): self
+    {
+        $this->user_technicien = $user_technicien;
+
+        return $this;
+    }
+
+    public function getCompagnyService(): ?CompagnyService
+    {
+        return $this->compagny_service;
+    }
+
+    public function setCompagnyService(?CompagnyService $compagny_service): self
+    {
+        $this->compagny_service = $compagny_service;
+
+        return $this;
+    }    
+   
 }

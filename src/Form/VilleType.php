@@ -2,27 +2,24 @@
 
 namespace App\Form;
 
-use App\Entity\Users;
 use App\Entity\Ville;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class VilleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
+    {      
+        $builder            
             ->add('name')
             ->add('adress')
             ->add('zip_code')
-            ->add('contact', EntityType::class, [                              
-                  'class' => Users::class,                          
-            ] )          
-        ;
+            ->add('contact')
+        ;       
     }
 
     public function configureOptions(OptionsResolver $resolver)

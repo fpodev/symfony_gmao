@@ -11,16 +11,26 @@ class BuildingType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
+        $uri = $_SERVER['REQUEST_URI'];
+      
+        if(stristr($uri, 'addBuilding') != FALSE){
+            $builder
+            ->add('name')           
+        ; 
+        }
+        else{
+            $builder
             ->add('name')
-            ->add('city_id')
+            ->add('ville')
         ;
+        }
+        
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Building::class,
+            'data_class' => Building::class,            
         ]);
     }
 }

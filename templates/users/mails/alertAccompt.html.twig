@@ -1,0 +1,24 @@
+{#
+Author: fpodev (fpodev@gmx.fr)
+resetPassword.html.twig (c) 2020
+Desc: description
+Created:  2020-10-12T14:50:44.355Z
+Modified: !date!
+#}
+
+<h1>Alerte tentative de connexion</h1>
+
+<p>Bonjour {{ name|capitalize }} {{ firstname|capitalize }},</p>
+<p>
+    Nous vous informons le blocage pendant 30 min de votre compte GMAO. <br>
+    <p>Ce blocage fait suite à 3 tentatives de connexion sans succés.</p>
+    <p>Si vous n'êtes pas à l'origine de ces tentatives, cliquer sur le bouton "Prévenir" ci-dessous </p>
+</p>
+<p> 
+   <form action="" method="post">     
+     <input type='hidden' id="name"  idUser="{{id}}">     
+     <input type="hidden" id='token' token="{{token}}">
+     <button type="submit">Prévenir</button>
+   </form>
+</p>
+  

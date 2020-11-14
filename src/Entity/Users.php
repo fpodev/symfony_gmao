@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass=UsersRepository::class)
@@ -58,23 +59,35 @@ class Users implements UserInterface
     private $activate_date;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ville::class, mappedBy="contact")
-     */
-    private $villes;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=ville::class)
+     * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="users")     * )
      */
     private $ville;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Works::class, mappedBy="user_request")
+     */
+    private $works_request;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Works::class, mappedBy="user_technicien")
+     */
+    private $works_technicien;
+    
     public function __construct()
     {
-        $this->villes = new ArrayCollection();
-    }
+        $this->works_request = new ArrayCollection();
+        $this->works_technicien = new ArrayCollection();
+        
+    }    
+    
     public function __toString()
     {
-        return $this->name;
+        if(is_null($this->email)) {
+            return 'NULL';
+        }    
+        return $this->email;
     }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -201,47 +214,76 @@ class Users implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Ville[]
-     */
-    public function getVilles(): Collection
+    public function getVille(): ?Ville
     {
-        return $this->villes;
+        return $this->ville;
     }
 
-    public function addVille(Ville $ville): self
+    public function setVille(?Ville $ville): self
     {
-        if (!$this->villes->contains($ville)) {
-            $this->villes[] = $ville;
-            $ville->setContact($this);
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Works[]
+     */
+    public function getWorksRequest(): Collection
+    {
+        return $this->works_request;
+    }
+
+    public function addWorksRequest(Works $worksRequest): self
+    {
+        if (!$this->works_request->contains($worksRequest)) {
+            $this->works_request[] = $worksRequest;
+            $worksRequest->setUserRequest($this);
         }
 
         return $this;
     }
 
-    public function removeVille(Ville $ville): self
+    public function removeWorksRequest(Works $worksRequest): self
     {
-        if ($this->villes->contains($ville)) {
-            $this->villes->removeElement($ville);
+        if ($this->works_request->removeElement($worksRequest)) {
             // set the owning side to null (unless already changed)
-            if ($ville->getContact() === $this) {
-                $ville->setContact(null);
+            if ($worksRequest->getUserRequest() === $this) {
+                $worksRequest->setUserRequest(null);
             }
         }
 
         return $this;
     }
 
-    public function getVille(): ?ville
+    /**
+     * @return Collection|Works[]
+     */
+    public function getWorksTechnicien(): Collection
     {
-        return $this->ville;
+        return $this->works_technicien;
     }
 
-    public function setVille(?ville $ville): self
+    public function addWorksTechnicien(Works $worksTechnicien): self
     {
-        $this->ville = $ville;
+        if (!$this->works_technicien->contains($worksTechnicien)) {
+            $this->works_technicien[] = $worksTechnicien;
+            $worksTechnicien->setUserTechnicien($this);
+        }
 
         return $this;
-    }   
-    
+    }
+
+    public function removeWorksTechnicien(Works $worksTechnicien): self
+    {
+        if ($this->works_technicien->removeElement($worksTechnicien)) {
+            // set the owning side to null (unless already changed)
+            if ($worksTechnicien->getUserTechnicien() === $this) {
+                $worksTechnicien->setUserTechnicien(null);
+            }
+        }
+
+        return $this;
+    }    
+
 }

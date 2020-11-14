@@ -5,7 +5,7 @@
 {% block body %}
 
 
-    <h1>Bienvenue {{ app.user.username }}</h1>
+    <h1>Bienvenue </h1>
     {% for message in app.flashes('erreur') %}
    <div class="col-xs4">
        <div class="p-3 my-2 rounded-2 error" role="alert">
@@ -14,9 +14,9 @@
    </div>
 {% endfor %}   
     <button  class="btn shadow-1 rounded-1 primary small">Show Toast</button>
-    <a href="{{ path('admin_home') }}">back to list</a>
-    <a href="{{ path('building_new') }}">add building</a>
+    <a href="{{ path('admin_home') }}">back to users list</a>   
     <a href="{{ path('ville_new') }}">add city</a>
+    <a href="{{ path('building_new') }}">add building</a>
 {% endblock %}
 {% block javascripts %}
 <script src="https://cdn.jsdelivr.net/npm/axentix@1.0.0-beta.0/dist/js/axentix.min.js"></script>
