@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Building;
+use App\Entity\Equipement;
 use App\Entity\Sector;
 use App\Form\Sector1Type;
+use App\Repository\EquipementRepository;
 use App\Repository\SectorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,38 +26,27 @@ class SectorController extends AbstractController
         return $this->render('sector/index.html.twig', [
             'sectors' => $sectorRepository->findAll(),
         ]);
-    }
-
-    /**
-     * @Route("/new", name="sector_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $sector = new Sector();
-        $form = $this->createForm(Sector1Type::class, $sector);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($sector);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('sector_index');
-        }
-
-        return $this->render('sector/new.html.twig', [
-            'sector' => $sector,
-            'form' => $form->createView(),
-        ]);
-    }
-
+    }    
     /**
      * @Route("/{id}", name="sector_show", methods={"GET"})
+     * @Route("/tvx/{id}", name="sector_travaux", methods={"GET"})
      */
-    public function show(Sector $sector): Response
+    public function show(Sector $sector, SectorRepository $sectorRepo, Building $building, EquipementRepository $equipementRepo): Response
     {
-        return $this->render('sector/show.html.twig', [
-            'sector' => $sector,
+        $uri = $_SERVER['REQUEST_URI'];     
+     
+        if(stristr($uri, '/tvx') == true){
+            $param = 'works/demande';   
+            $value = $sectorRepo->findBy(['building' => $building->getId()]);      
+        }
+        else{
+            $param = 'sector/show';
+            $value = $equipementRepo->findby(['sector' => $sector->getId()]);
+        }
+        return $this->render(''.$param.'.html.twig', [
+            'name' => $building,
+            'values' => $value,
+            'path' => 'equipement_travaux'
         ]);
     }
 
@@ -67,6 +59,10 @@ class SectorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $equipement = new Equipement();
+            $equipement->setName($form->get('equipement')->getData());
+            $equipement->setSector($sector);
+            $sector->getEquipements()->add($equipement);
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('sector_index');

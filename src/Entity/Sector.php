@@ -25,12 +25,12 @@ class Sector
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Building::class, inversedBy="sectors")
+     * @ORM\ManyToOne(targetEntity=Building::class, inversedBy="sectors", cascade={"persist"})
      */
-    private $Building;
+    private $building;
 
     /**
-     * @ORM\OneToMany(targetEntity=Equipement::class, mappedBy="sector")
+     * @ORM\OneToMany(targetEntity=Equipement::class, mappedBy="sector", cascade={"persist"})
      */
     private $equipements;
 
@@ -39,7 +39,11 @@ class Sector
      */
     private $works;
     
-
+    public function __toString():?string
+    {
+        return $this->name;
+    }
+    
     public function __construct()
     {
         $this->equipements = new ArrayCollection();
@@ -65,12 +69,12 @@ class Sector
 
     public function getBuilding(): ?Building
     {
-        return $this->Building;
+        return $this->building;
     }
 
-    public function setBuilding(?Building $Building): self
+    public function setBuilding(?Building $building): self
     {
-        $this->Building = $Building;
+        $this->building = $building;
 
         return $this;
     }

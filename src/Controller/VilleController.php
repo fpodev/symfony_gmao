@@ -22,15 +22,27 @@ class VilleController extends AbstractController
     public const DEFAULT_BUILDING = 'Bâtiment A';
 
     /**
-     * @Route("/", name="ville_index", methods={"GET"})
+     * @Route("/", name="ville_index", methods={"GET"})      
      */
     public function index(VilleRepository $villeRepository): Response
-    {
-        return $this->render('ville/index.html.twig', [
-            'villes' => $villeRepository->findAll(),
-        ]);
-    }
+    {                    
+            return $this->render('ville/index.html.twig', [
+                'villes' => $villeRepository->findAll(),
+            ]);        
+    } 
 
+    /**
+     * @Route("/tvx", name="ville_tvx", methods={"GET"})
+     */
+    public function ville_tvx(VilleRepository $villeRepository): Response
+    {
+        return $this->render('works/demande.html.twig', [
+            'values' => $villeRepository->findAll(),
+            'name' => 'ville',
+            'path' => 'building_tvx',
+        ]);        
+        
+    }
     /**
      * @Route("/new", name="ville_new", methods={"GET","POST"})
      */
@@ -66,13 +78,13 @@ class VilleController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="ville_show", methods={"GET"})
+     * @Route("/{id}", name="ville_show", methods={"GET"})    
      */
-    public function show(Ville $ville, BuildingRepository $Building): Response
+    public function show(Ville $ville, BuildingRepository $buildingRepo): Response
     {
         return $this->render('ville/show.html.twig', [
             'ville' => $ville,
-            'building' => $Building->findBy(['ville' => $ville->getId()]),
+            'building' => $buildingRepo->findBy(['ville' => $ville->getId()]),
         ]);
     }
 
@@ -82,11 +94,17 @@ class VilleController extends AbstractController
     public function edit(Request $request, Ville $ville): Response
     {            
         $form = $this->createForm(VilleType::class, $ville);
-        $form->handleRequest($request);
-
+        $form->handleRequest($request);       
+         
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $ville->getContact();            
-            $user->setVille($ville);            
+            $user->setVille($ville);
+
+            $building = new Building();                  
+            $building->setName($form->get('building')->getData()); 
+            $building->setVille($ville);
+            $ville->getBuilding()->add($building);
+            
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('ville_index');
@@ -97,10 +115,11 @@ class VilleController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * @Route("/{id}/addBuilding", name="ville_addBuilding", methods={"GET","POST"})
      */
-    public function addBuilding(Request $request, Ville $ville, $id): Response
+    public function addBuilding(Request $request, Ville $ville): Response
     {    
         $building = new Building();        
         $form = $this->createForm(BuildingType::class);
@@ -137,5 +156,7 @@ class VilleController extends AbstractController
         }
 
         return $this->redirectToRoute('ville_index');
-    }    
+    }  
+
+    
 }

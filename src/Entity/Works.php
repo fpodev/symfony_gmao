@@ -15,11 +15,7 @@ class Works
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
-
-    
-
-    
+    private $id;    
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -27,14 +23,9 @@ class Works
     private $title;
 
     /**
-     * @ORM\Column(type="text")
-     */
-    private $description;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
-    private $task;
+    private $description;    
 
     /**
      * @ORM\Column(type="datetime")
@@ -47,7 +38,7 @@ class Works
     private $validate_date;    
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $estimate;
 
@@ -98,7 +89,13 @@ class Works
     /**
      * @ORM\ManyToOne(targetEntity=CompagnyService::class, inversedBy="works")
      */
-    private $compagny_service;      
+    private $compagny_service;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="works")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Ville;      
 
     public function getId(): ?int
     {
@@ -127,19 +124,7 @@ class Works
         $this->description = $description;
 
         return $this;
-    }
-
-    public function getTask(): ?string
-    {
-        return $this->task;
-    }
-
-    public function setTask(string $task): self
-    {
-        $this->task = $task;
-
-        return $this;
-    }
+    }    
 
     public function getCreateDate(): ?\DateTimeInterface
     {
@@ -281,6 +266,18 @@ class Works
     public function setCompagnyService(?CompagnyService $compagny_service): self
     {
         $this->compagny_service = $compagny_service;
+
+        return $this;
+    }
+
+    public function getVille(): ?Ville
+    {
+        return $this->Ville;
+    }
+
+    public function setVille(?Ville $Ville): self
+    {
+        $this->Ville = $Ville;
 
         return $this;
     }    

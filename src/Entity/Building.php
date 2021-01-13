@@ -30,7 +30,7 @@ class Building
     private $ville;
 
     /**
-     * @ORM\OneToMany(targetEntity=Sector::class, mappedBy="Building")
+     * @ORM\OneToMany(targetEntity=Sector::class, mappedBy="Building", cascade={"persist"} )
      */
     private $sectors;
 

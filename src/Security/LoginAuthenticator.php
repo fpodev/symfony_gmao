@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\Users;
 use App\Entity\LoginAttempt;
+use App\Repository\UsersRepository;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\LoginAttemptRepository;
@@ -120,7 +121,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
        
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
-        }
+        }          
         
         return new RedirectResponse($this->urlGenerator->generate('users_home'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
@@ -154,7 +155,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
         
         $this->entityManager->persist($newLoginAttempt);
         $this->entityManager->flush(); 
-    }
+    }    
     
     protected function getLoginUrl()
     {

@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Building;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,7 +23,12 @@ class BuildingType extends AbstractType
         else{
             $builder
             ->add('name')
-            ->add('ville')
+            ->add('ville', TextType::class,[
+                'disabled' => true,
+            ])
+            ->add('sector', TextType::class,[
+                'mapped' => false,
+            ])
         ;
         }
         

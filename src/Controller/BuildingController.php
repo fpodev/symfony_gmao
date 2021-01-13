@@ -2,16 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Ville;
+use App\Entity\Sector;
 use App\Entity\Building;
+use App\Entity\Ville;
+use App\Form\Sector1Type;
 use App\Form\BuildingType;
 use App\Repository\BuildingRepository;
-use Proxies\__CG__\App\Entity\Ville as EntityVille;
+use App\Repository\SectorRepository;
+use App\Repository\VilleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 /**
  * @Route("/building")
@@ -20,11 +23,14 @@ class BuildingController extends AbstractController
 {
     /**
      * @Route("/", name="building_index", methods={"GET"})
+     * 
      */
-    public function index(BuildingRepository $buildingRepository): Response
+    public function index(BuildingRepository $buildingRepo): Response
     {
+               
         return $this->render('building/index.html.twig', [
-            'buildings' => $buildingRepository->findAll(),
+            'buildings' => $buildingRepo->findAll(),
+            
         ]);
     }
 
@@ -33,7 +39,7 @@ class BuildingController extends AbstractController
      */
     public function new(Request $request, BuildingRepository $build): Response
     {
-        $building = new Building();       
+        $building = new Building();        
         $form = $this->createForm(BuildingType::class, $building);
         $form->handleRequest($request);
 
@@ -52,12 +58,52 @@ class BuildingController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="building_show", methods={"GET"})
+     *@Route("/tvx/{id}", name="building_tvx", methods={"GET"})
      */
-    public function show(Building $building): Response
+    public function tvx(Request $request, ville $ville, BuildingRepository $buildingRepo): Response
     {
-        return $this->render('building/show.html.twig', [
+        return $this->render('works/demande.html.twig', [
+            'values' => $buildingRepo->findBy(['ville' => $ville->getId()]),
+            'name' => 'Bâtiments',
+            'path' => 'sector_travaux'
+        ]);
+    }
+    
+    /**
+     * @Route("/{id}/addSector", name="sector_add", methods={"GET","POST"})
+     */
+    public function addSector(Request $request, Building $building): Response
+    {
+
+        $sector = new Sector();
+        $form = $this->createForm(Sector1Type::class, $sector);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sector->setName($form->get('name')->getData());                     
+            $sector->setBuilding($building);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($sector);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('building_index');
+        }
+
+        return $this->render('building/addSector.html.twig', [
+            'sector' => $sector,
             'building' => $building,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="building_show", methods={"GET"})     
+     */
+    public function show(Building $building, SectorRepository $sectorRepo): Response
+    {
+            return $this->render('building/show.html.twig', [
+             'building' => $building,
+             'secteurs' => $sectorRepo->findBy(['building' => $building->getId()]),
         ]);
     }
 
@@ -68,8 +114,13 @@ class BuildingController extends AbstractController
     {
         $form = $this->createForm(BuildingType::class, $building);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
+            $sector = new Sector();
+            $sector->setName($form->get('sector')->getData());            
+            $sector->setBuilding($building);   
+            $building->getSectors()->add($sector);
+          
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('building_index');

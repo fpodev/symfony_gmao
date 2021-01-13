@@ -34,14 +34,16 @@ class UsersController extends AbstractController
     public function index(Request $request, UsersRepository $usersRepository, LoginAttemptRepository $loginAttemptReposity): Response
     {   
         $session = $request->getSession();
-
+       
+        $session->set('user', 'jean');
+                
         $user = $usersRepository->findOneBy(['id' => $session->get('id')]); 
         $entityManager = $this->getDoctrine()->getManager();
 
-            $loginAttempt = $loginAttemptReposity->findBy(['username' => $user->getEmail()]);
+         /*   $loginAttempt = $loginAttemptReposity->findBy(['username' => $user->getEmail()]);
             foreach ($loginAttempt as $key) {
                 $entityManager->remove($key);            
-               };               
+               };              
             
             $entityManager->flush();
 
@@ -51,7 +53,7 @@ class UsersController extends AbstractController
         $duration = $today->diff($valid);        
         $expired = $duration->format('%a');        
       
-        if($actived == null || $expired >= '30'){           
+      if($actived == null || $expired >= '30'){           
             $form = $this->createForm(ChangePasswordType::class);                                       
             
              return $this->render('change_password/index.html.twig',[
@@ -59,11 +61,12 @@ class UsersController extends AbstractController
                  'valid' => $valid,
                  'form' => $form->createView()
              ]);
-        }else{
-            return $this->render('users/home.html.twig', [
+        }else{*/
+            $expired = 2;
+            return $this->render('users/home.html.twig',[
                 'expired' => $expired,
             ]);
-        }            
+        //}            
     }
 
     /**

@@ -49,12 +49,18 @@ class Ville
     /**
      * @ORM\OneToMany(targetEntity=Building::class, mappedBy="ville", cascade="persist")
      */
-    private $building;    
+    private $building;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Works::class, mappedBy="Ville", orphanRemoval=true)
+     */
+    private $works;    
 
     public function __construct()    {
         
         $this->users = new ArrayCollection();
-        $this->building = new ArrayCollection();        
+        $this->building = new ArrayCollection();
+        $this->works = new ArrayCollection();        
     } 
 
     public function __toString():?string
@@ -169,6 +175,36 @@ class Ville
             // set the owning side to null (unless already changed)
             if ($building->getVille() === $this) {
                 $building->setVille(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Works[]
+     */
+    public function getWorks(): Collection
+    {
+        return $this->works;
+    }
+
+    public function addWork(Works $work): self
+    {
+        if (!$this->works->contains($work)) {
+            $this->works[] = $work;
+            $work->setVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWork(Works $work): self
+    {
+        if ($this->works->removeElement($work)) {
+            // set the owning side to null (unless already changed)
+            if ($work->getVille() === $this) {
+                $work->setVille(null);
             }
         }
 
