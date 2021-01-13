@@ -27,19 +27,21 @@
             <tr>
                 <th>Contact</th>
                 <td>{{ ville.contact }}</td>
-            </tr>
-        </tbody>
-        <tbody>
+            </tr>        
             <tr>
-                <th>Bâtiment</th>
-            </tr>
-            {% for buildings in building  %} 
-            <tr>            
-                <td>{{ buildings.name }}</td>                
-            </tr>
-            {% endfor %}
+                <th>Listes des bâtiments</th>             
+                    <td>
+                        <select id="mySelect" onchange="myFunction()">
+                            {% for buildings in building  %}                             
+                            <option value='{{ buildings.id }}'>{{ buildings.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button><a id="change" href="">Texte du bouton</a></button>                                                           
+                    </td>                               
+            </tr>            
         </tbody>
-    </table>
+    </table>  
+    
 
     <a href="{{ path('ville_index') }}">back to list</a>
 
@@ -48,4 +50,15 @@
     <a href="{{ path('ville_addBuilding', {'id': ville.id}) }}">ajout batiment</a>
 
     {{ include('ville/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function myFunction() {
+      var x = document.getElementById("mySelect").value;  
+      var url = "{{ path('building_edit', {'id': 'value'}) }}"; 
+        url = url.replace("value", x);
+      document.getElementById("change").href = url;
+    }
+    </script>
 {% endblock %}

@@ -6,6 +6,15 @@
 
 
     <h1>Bienvenue </h1>
+
+    <button><a href="{{ path('ville_index') }}">Villes</a></button>
+    <button>Buildings</button>
+    <button>Sectors</button>
+    <button>equipements</button>
+    <button>Users</button>
+    <button><a href="{{ path('works_new') }}">Works new request</a></button>
+    <button>works request</button>
+    <button>Works in progress</button>
     {% for message in app.flashes('erreur') %}
    <div class="col-xs4">
        <div class="p-3 my-2 rounded-2 error" role="alert">

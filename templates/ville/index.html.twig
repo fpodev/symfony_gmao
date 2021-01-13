@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ville index{% endblock %}
+{% block title %}value index{% endblock %}
 
 {% block body %}
-    <h1>Ville index</h1>
+    <h1>{{ name }} index</h1>
 
     <table class="table">
         <thead>
@@ -12,22 +12,23 @@
                 <th>Name</th>
                 <th>Adress</th>
                 <th>Zip_code</th>
-                <th>Contact</th>
-                <th>actions</th>
+                <th>Contact</th>                
+                <th>actions</th>                
             </tr>
         </thead>
         <tbody>
-        {% for ville in villes %}
+        {% for value in values %}
             <tr>
-                <td>{{ ville.id }}</td>
-                <td>{{ ville.name }}</td>
-                <td>{{ ville.adress }}</td>
-                <td>{{ ville.zipCode }}</td>
-                <td>{{ ville.contact }}</td>
+                <td>{{ value.id }}</td>
+                <td>{{ value.name }}</td>
+                <td>{{ value.adress }}</td>
+                <td>{{ value.zipCode }}</td>
+                <td>{{ value.contact }}</td>                                     
                 <td>
-                    <a href="{{ path('ville_show', {'id': ville.id}) }}">show</a>
-                    <a href="{{ path('ville_edit', {'id': ville.id}) }}">edit</a>
+                    <a href="{{ path('ville_show', {'id': value.id}) }}">show</a>
+                    <a href="{{ path('ville_edit', {'id': value.id}) }}">edit</a>
                 </td>
+                
             </tr>
         {% else %}
             <tr>
