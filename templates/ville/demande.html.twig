@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ville demande{% endblock %}
+
+{% block body %}
+    <h1>Villes liste</h1>
+
+    <table class="table">
+        <thead>
+            <tr>                               
+                <th>Selectionner une ville ci-dessous</th>                
+            </tr>
+        </thead>
+        <tbody>
+        {% for ville in villes %}
+            <tr>                                                                  
+                <td>
+                   <button><a href="{{ path('building_travaux', {'id': ville.id}) }}"> {{ ville.name }}</a></button>             
+                </td>
+                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>  
+{% endblock %}

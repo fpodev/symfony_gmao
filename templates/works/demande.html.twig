@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ name }} demande{% endblock %}
+
+{% block body %}
+    <h1> {{ name }} liste</h1>
+
+    <div class="tvx_liste">                                     
+                <h2>Selectionner une {{ name }} ci-dessous</h2>               
+  
+        {% for value in values %}            
+                   <button><a href="{{ path(''~ path ~'', {'id': value.id}) }}"> {{ value.name }}</a></button> <br><br>                
+        {% else %}          
+                <p>no records found</p>
+        {% endfor %}    
+{% endblock %}

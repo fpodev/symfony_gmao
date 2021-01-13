@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter secteur{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un secteur pour le {{ building.name }} de la ville de {{ building.ville }} </h1>
+
+    {{ include('building/_form.html.twig', {'button_label': 'Ajouter'}) }}
+
+    <a href="{{ path('building_index') }}">back to list</a>
+   
+{% endblock %}
